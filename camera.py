@@ -3,7 +3,7 @@ import credentials
 import controls
 from time import sleep
 
-stream = f"rtsp://{credentials.USERNAME}:{credentials.PASSWORD}@{credentials.IP}:554/cam/realmonitor?channel=1&subtype=1&rstp_transport=udp"
+stream = f"rtsp://{credentials.USERNAME}:{credentials.PASSWORD}@{credentials.IP}:554/cam/realmonitor?channel=1&subtype=1&rstp_transport=tcp"
 cap = cv2.VideoCapture(stream, cv2.CAP_FFMPEG)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
@@ -20,11 +20,15 @@ vertical_offset = 0
 controls.face_forward()
 
 while True:
+    frame_count += 1
+    if frame_count % 5 != 0:
+        continue  # skip frame
+
     ret, frame = cap.read()
     if not ret:
         print("Failed to grab frame")
         break
-
+    
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
 

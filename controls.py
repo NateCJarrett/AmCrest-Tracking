@@ -4,7 +4,7 @@ import credentials
 from requests.auth import HTTPDigestAuth
 from time import sleep
 
-URL = "http://{}/cgi-bin/ptz.cgi".format(credentials.IP)
+URL = f"http://{credentials.IP}/cgi-bin/ptz.cgi"
 AUTH = HTTPDigestAuth(credentials.USERNAME, credentials.PASSWORD)
 SPEED = 3
 
