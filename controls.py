@@ -1,10 +1,11 @@
 import requests
 import keyboard
+import credentials
 from requests.auth import HTTPDigestAuth
 from time import sleep
 
-URL = "http://192.168.1.108/cgi-bin/ptz.cgi"
-AUTH = HTTPDigestAuth("admin", "admin123")
+URL = "http://{}/cgi-bin/ptz.cgi".format(credentials.IP)
+AUTH = HTTPDigestAuth(credentials.USERNAME, credentials.PASSWORD)
 SPEED = 3
 
 def ptz_move(direction, vertical=SPEED, horizontal=SPEED):
@@ -31,14 +32,40 @@ def ptz_stop():
     response = requests.get(URL, params=params, auth=AUTH, timeout=2)
     # print(response.status_code, response.text, response.headers)
 
-if __name__ == "__main__":
-    def controller(key):
-        if keyboard.is_pressed(key):
-            ptz_move(key)
+def move_up():
+    ptz_move("Up")
 
-    def stopped():
-        if not keyboard.is_pressed("Up") and not keyboard.is_pressed("Down") and not keyboard.is_pressed("Left") and not keyboard.is_pressed("Right"):
-            ptz_stop()
+def move_down():
+    ptz_move("Down")
+
+def move_left():
+    ptz_move("Left")
+
+def move_right():
+    ptz_move("Right")
+
+def face_forward(): # Non-functioning
+    params = {
+        "action": "goto",
+        "channel": 0,
+        "code": "Position",
+        "arg1": 1,
+        "arg2": 0,
+        "arg3": 0
+    }
+    response = requests.get(URL, params=params, auth=AUTH, timeout=2)
+    print(response.status_code, response.text, response.headers)
+
+def controller(key):
+    if keyboard.is_pressed(key):
+        ptz_move(key)
+
+def stopped():
+    if not keyboard.is_pressed("Up") and not keyboard.is_pressed("Down") and not keyboard.is_pressed("Left") and not keyboard.is_pressed("Right"):
+        ptz_stop()
+
+def manual():
+    face_forward()
     
     print("Listening for keyboard inputs. Press ESC to exit.")
     while not keyboard.is_pressed("esc"):
@@ -47,4 +74,7 @@ if __name__ == "__main__":
         controller("Left")
         controller("Right")
         stopped()
+
+if __name__ == "__main__": # Manual Controls
+    manual()
 
