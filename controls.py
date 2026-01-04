@@ -6,7 +6,10 @@ from time import sleep
 
 URL = f"http://{credentials.IP}/cgi-bin/ptz.cgi"
 AUTH = HTTPDigestAuth(credentials.USERNAME, credentials.PASSWORD)
-SPEED = 3
+SPEED = 1
+
+session = requests.Session()
+session.auth = AUTH;
 
 def ptz_move(direction, vertical=SPEED, horizontal=SPEED):
     params = {
@@ -17,8 +20,12 @@ def ptz_move(direction, vertical=SPEED, horizontal=SPEED):
         "arg2": horizontal,
         "arg3": 0
     }
-    response = requests.get(URL, params=params, auth=AUTH, timeout=2)
-    # print(response.status_code, response.text, response.headers)
+
+    response = session.get(URL, params=params, timeout=2)
+    request_time = response.elapsed.total_seconds() * 1000
+    print(f"PTZ Move {direction}: {request_time} milliseconds")
+    return True
+    #print(response.status_code, response.text, response.headers)
 
 def ptz_stop():
     params = {
@@ -29,8 +36,10 @@ def ptz_stop():
         "arg2": 0,
         "arg3": 0
     }
-    response = requests.get(URL, params=params, auth=AUTH, timeout=2)
-    # print(response.status_code, response.text, response.headers)
+    response = session.get(URL, params=params, timeout=2)
+    request_time = response.elapsed.total_seconds() * 1000
+    print(f"PTZ Stop: {request_time} milliseconds")
+    #print(response.status_code, response.text, response.headers)
 
 def move_up():
     ptz_move("Up")
@@ -39,7 +48,7 @@ def move_down():
     ptz_move("Down")
 
 def move_left():
-    ptz_move("Left")
+    ptz_move("Left") 
 
 def move_right():
     ptz_move("Right")
