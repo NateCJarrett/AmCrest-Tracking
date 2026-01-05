@@ -38,6 +38,25 @@ HTTP CGI Commands (Digest Auth)
 | Substream Resolution | 640*480 (VGA) | Lower resolution -> faster tranport |
 | PTZ Speed | 1 | Slower speed, less overshooting |
 
+## Installation
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Linux / macOS
+# .venv\Scripts\activate    # Windows
+
+pip install -r requirements.txt
+```
+
+## Configuration
+
+Create a `credentials.py` file in the project root:
+
+```python
+IP = "192.168.1.100"
+USERNAME = "admin"
+PASSWORD = "password"
+```
+
 ## Previous Latency Issue
 ### Problem/Debugging:
 - The position of the camera that is being processed by the Haar cascade lags behind the true position of the camera. This prevents the camera from making acurate adjustments to the camera in real time, often overshooting then overcorrecting. This latency was often over a full second which is unusable.
