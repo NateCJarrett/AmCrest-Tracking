@@ -22,9 +22,6 @@ def ptz_move(direction, vertical=SPEED, horizontal=SPEED):
     }
 
     response = session.get(URL, params=params, timeout=2)
-    request_time = response.elapsed.total_seconds() * 1000
-    print(f"PTZ Move {direction}: {request_time} milliseconds")
-    return True
     #print(response.status_code, response.text, response.headers)
 
 def ptz_stop():
@@ -37,8 +34,6 @@ def ptz_stop():
         "arg3": 0
     }
     response = session.get(URL, params=params, timeout=2)
-    request_time = response.elapsed.total_seconds() * 1000
-    print(f"PTZ Stop: {request_time} milliseconds")
     #print(response.status_code, response.text, response.headers)
 
 def move_up():
@@ -53,18 +48,6 @@ def move_left():
 def move_right():
     ptz_move("Right")
 
-def face_forward(): # Non-functioning
-    params = {
-        "action": "goto",
-        "channel": 0,
-        "code": "Position",
-        "arg1": 1,
-        "arg2": 0,
-        "arg3": 0
-    }
-    response = requests.get(URL, params=params, auth=AUTH, timeout=2)
-    print(response.status_code, response.text, response.headers)
-
 def controller(key):
     if keyboard.is_pressed(key):
         ptz_move(key)
@@ -74,8 +57,6 @@ def stopped():
         ptz_stop()
 
 def manual():
-    face_forward()
-    
     print("Listening for keyboard inputs. Press ESC to exit.")
     while not keyboard.is_pressed("esc"):
         controller("Up")

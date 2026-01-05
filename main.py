@@ -13,7 +13,6 @@ center_x = width // 2
 center_y = height // 2
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-frame_count = 0
 horizontal_offset = 0
 vertical_offset = 0
 
@@ -21,14 +20,10 @@ current_direction = None
 last_command_time = 0
 PTZ_INTERVAL = 0.2  # 5 Hz max
 
-controls.face_forward()
-
 while True:
-    # for _ in range(3):
-    #    cap.grab()
     cap.grab()
-
     ret, frame = cap.retrieve()
+
     if not ret:
         print("Failed to grab frame")
         break
@@ -42,7 +37,8 @@ while True:
         horizontal_offset = (x + w // 2) - center_x
         vertical_offset = (y + h // 2) - center_y
     else:
-        continue
+        horizontal_offset = 0
+        vertical_offset = 0
 
     now = time.time()
     new_direction = None
@@ -69,10 +65,6 @@ while True:
 
         current_direction = new_direction
         last_command_time = now
-    
-    frame_count += 1
-
-    #print(f"Horizontal Offset: {horizontal_offset}, Vertical Offset: {vertical_offset}")
 
     cv2.imshow("Frame", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
